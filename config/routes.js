@@ -47,6 +47,8 @@ module.exports.routes = {
   'get /api/bill/getAll': 'BillController.getListBills',
   'get /api/bill/get': 'BillController.getBill',
   'get /api/bill/getByUser': 'BillController.getBillByUser',
+  'get /api/bill/count': 'BillController.countBillByTime',
+  'get /api/bill/cancel': 'BillController.cancelBill',
 
 //user
   'get /api/user/getAll': 'UserController.getAllUser',

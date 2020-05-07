@@ -4,13 +4,16 @@ module.exports = {
 		let {query} = req;
 		let page = query.page ? query.page : 1;
 		onePage = query.onePage ? query.onePage : 9;
-    let numbSkip = (page - 1) * onePage;
+		let numbSkip = (page - 1) * onePage;
+		let orderBy = query.orderBy || 'created DESC';
+		let price = query.price ? JSON.parse(query.price) : {};
 		try {
 			let products = await Product.find({select: ['brand_id','product_name','image','price','created']})
-				.sort("created DESC")
+				.where(price)
+				.sort(orderBy)
 				.limit(onePage)
 				.skip(numbSkip);
-			let allProd = await Product.count();
+			let allProd = await Product.count().where(price);
 			res.send({products, allProd});
 		} catch (error) {
 			console.log(error);
@@ -22,12 +25,16 @@ module.exports = {
 		let {brand_id} = query;
 		let page = query.page ? query.page : 1;
 		let numbSkip = (page - 1) * onePage;
+		let orderBy = query.orderBy || 'created DESC';
+		let conditions = query.price ? JSON.parse(query.price) : {};
+		conditions.brand_id = brand_id;
 		try {
-			products = await Product.find({brand_id})
-				.sort("created DESC")
+			products = await Product.find()
+				.where(conditions)
+				.sort(orderBy)
 				.limit(onePage)
 				.skip(numbSkip);
-			let allProd = await Product.count({brand_id});
+			let allProd = await Product.count().where(conditions);
 			res.send({products, allProd});
 		} catch (error) {
 			console.log(error);

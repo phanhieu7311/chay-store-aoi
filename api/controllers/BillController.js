@@ -64,6 +64,33 @@ module.exports = {
     })).then(()=>{
       res.send(billDatas);
     });
+  },
+  countBillByTime: async function (req, res) {
+    let {query} = req;
+    let from = query.from;
+    let to = query.to;
+    let conditons = {
+      created: {
+        '>=': from,
+        '<=': to
+      }
+    }
+    if (query.status) {
+      conditons.status = query.status;
+    }
+    let count = await Bill.count().where(conditons);
+    res.send({
+      success: true,
+      count: count
+    });
+  },
+  cancelBill: async function (req,res) {
+    let {bill_id} = req.query;
+    let bill = await Bill.update({id: bill_id}).set({status: 3}).fetch();
+    res.send({
+      success: true,
+      bll: bill
+    });
   }
 };
 
